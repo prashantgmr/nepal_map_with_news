@@ -3,14 +3,18 @@ import { Map, GeoJSON} from "react-leaflet";
 import mapData from "./../data/districts.json";
 import "leaflet/dist/leaflet.css";
 import "./Map.css";
+import NewsBrief from './NewsBrief';
 const newsDetail =[
     {
         id : 1,
-        news: [ {title: "asdasd", content:"sdfdfsdfsdfsdf"}]
+        news: [ {title: "Bhojpur", content:"This is bhojpur"}]
     },
     {
         id: 2,
-        news: [{ title: "asdasd", content: "sdfdfsdfsdfsdf" }]
+        news: [
+            { title: "Dhankuta", content: "This is Dhankuta" },
+            {title : "What is in Dhankuta" , content : "I dont know man"}
+        ]
     }
 ]
 export default function NepalMap() {
@@ -69,7 +73,6 @@ export default function NepalMap() {
         } else {
             fillColour = "#f5b4ef"
         }
-
         layer.options.fillColor = fillColour;
         const name = district.properties.जिल्ला;
         layer.bindTooltip(name);
@@ -87,7 +90,7 @@ export default function NepalMap() {
       };
     return (
         <div>
-        <Map style={{ height: "80vh" }} center={[28.5,84]} zoom={7.35}>
+        <Map style={{ height: "80vh" }} center={[28.5,84]} zoom={7.35} minZoom={6} maxZoom={8}>
     
           <GeoJSON
             ref= {geojson}
@@ -96,7 +99,11 @@ export default function NepalMap() {
             onEachFeature={onEachDistrict}
           />
         </Map>
-
+        <div className="news_section">
+            {news.map((item,id)=>(
+                   <NewsBrief  key={id} data={item}/>
+            ))}
+        </div>
       </div>
     )
 }

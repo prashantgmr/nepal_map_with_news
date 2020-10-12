@@ -4,3 +4,12 @@ body {
   .leaflet-container {
     background-color: #f7f7f7;
   }
+
+  .news_section {
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    grid-gap: 1em;
+  }
+  .newsbrief {
+    background-color:red
+  }
