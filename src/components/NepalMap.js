@@ -75,6 +75,7 @@ export default function NepalMap() {
         }
         layer.options.fillColor = fillColour;
         const name = district.properties.जिल्ला;
+        console.log(name, district.idx)
         layer.bindTooltip(name);
         layer.bindPopup(name);
         layer.on({
