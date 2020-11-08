@@ -2,35 +2,26 @@ import React, { useState, useEffect, useRef} from 'react';
 import { Map, GeoJSON} from "react-leaflet";
 import mapData from "./../data/districts.json";
 import "leaflet/dist/leaflet.css";
-import "./Map.css";
+import axios from 'axios'
 import NewsBrief from './NewsBrief';
-const newsDetail =[
-    {
-        id : 1,
-        news: [ {title: "Bhojpur", content:"This is bhojpur"}]
-    },
-    {
-        id: 2,
-        news: [
-            { title: "Dhankuta", content: "This is Dhankuta" },
-            {title : "What is in Dhankuta" , content : "I dont know man"}
-        ]
-    }
-]
+
 export default function NepalMap() {
     const [selectDistrict, setSelectDistrict] = useState('');
     const [news, setNews] = useState([]);
     const geojson = useRef();
-
     useEffect(() => {
-        const newsData = newsDetail.filter(item => item.id == selectDistrict);
-        if(newsData.length){
-        setNews(newsData[0].news)
+        async function fetchMyAPI() {
+            let response = await axios.get(`http://localhost:5000/api/v1/news`)
+            response = await response.data.data;
+            const newsData = response.filter(x=>x.district == selectDistrict)
+            setNews(newsData);
+        };
+        if(selectDistrict){
+        fetchMyAPI()
         }
-        return () => {
-            setNews([])
-        }
+
     }, [selectDistrict]);
+
 
     var i = 1 ,fillColour;
     Object.keys(mapData.features).map(
@@ -76,17 +67,10 @@ export default function NepalMap() {
         layer.options.fillColor = fillColour;
         const name = district.properties.जिल्ला;
         console.log(name, district.idx)
-        layer.bindTooltip(name);
+        layer.bindTooltip(name,{permanent: true, direction:"center" , className:"leaflet-label"});
         layer.bindPopup(name);
         layer.on({
             click: districtClicked,
-        });
-        layer.on({
-            mouseout: function (e) {
-                // e.target.setStyle({
-                //     fillColor : fillColour
-                // });
-            }
         });
       };
     return (
@@ -101,8 +85,8 @@ export default function NepalMap() {
           />
         </Map>
         <div className="news_section">
-            {news.map((item,id)=>(
-                   <NewsBrief  key={id} data={item}/>
+            {news.length && news.map((item)=>(
+                   <NewsBrief  key={item._id} {...item}/>
             ))}
         </div>
       </div>
